@@ -228,40 +228,20 @@ const FALLBACK_CSV = `FECHA,COMB. GANADORA,,,,,,SUEÑO
 6/11/2023,10,13,14,25,30,35,5`;
 
 let historicalDraws = [];
-let deferredPrompt;
 
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .then(reg => console.log('Service Worker registered'))
-            .catch(err => console.log('Service Worker registration failed:', err));
-    });
-}
-
-// PWA Install Prompt
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    document.getElementById('install-banner').style.display = 'flex';
-});
-
-document.getElementById('install-btn')?.addEventListener('click', async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        console.log(`User ${outcome} the install prompt`);
-        deferredPrompt = null;
-        document.getElementById('install-banner').style.display = 'none';
-    }
-});
-
-document.getElementById('dismiss-btn')?.addEventListener('click', () => {
-    document.getElementById('install-banner').style.display = 'none';
-});
+// Electron API detection
+const isElectron = window.electronAPI !== undefined;
 
 // Initialize App
 document.addEventListener('DOMContentLoaded', () => {
+    // Show Electron app version if available
+    if (isElectron) {
+        const versionEl = document.getElementById('app-version');
+        if (versionEl) {
+            versionEl.textContent = '🖥️ Desktop App';
+        }
+    }
+    
     loadData();
     document.getElementById('refresh-btn')?.addEventListener('click', () => {
         generatePredictions();

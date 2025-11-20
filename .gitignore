@@ -26,11 +26,20 @@ downloads/
 *.pdf
 *.tsv
 
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+
+# Electron / Build artifacts
+dist/
+dist-electron/
+build/
+release/
+*.map
+
 # Test and temporary files (keep in repo as they're useful)
 # test.html
 # app-test.js
-
-# Build artifacts (if any are added later)
-dist/
-build/
-*.map

@@ -1,0 +1,67 @@
+{
+  "name": "eurodreams-predictor",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "main": "dist-electron/main.cjs",
+  "description": "EuroDreams Lottery Number Predictor - Desktop Application",
+  "author": "jrcramos",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"cross-env NODE_ENV=development vite\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:build": "npm run build && tsc -p tsconfig.electron.json && node scripts/rename-cjs.js && electron-builder",
+    "electron:start": "electron .",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.eurodreams.predictor",
+    "productName": "EuroDreams Predictor",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "dist-electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis"
+      ],
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "build/icon.icns"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "category": "Utility"
+    }
+  },
+  "dependencies": {
+    "axios": "^1.6.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.14.0",
+    "@vitejs/plugin-react": "^5.0.0",
+    "concurrently": "^9.2.1",
+    "cross-env": "^10.1.0",
+    "electron": "^39.2.1",
+    "electron-builder": "^26.0.12",
+    "typescript": "~5.8.2",
+    "vite": "^6.2.0",
+    "wait-on": "^8.0.5"
+  }
+}
