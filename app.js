@@ -287,10 +287,16 @@ async function discoverCSVUrl() {
         for (const proxy of corsProxies) {
             try {
                 const url = proxy + encodeURIComponent(LOTOIDEAS_URL);
+                
+                // Create abort controller for timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
                 const response = await fetch(proxy ? url : LOTOIDEAS_URL, { 
-                    timeout: 5000,
-                    signal: AbortSignal.timeout(5000)
+                    signal: controller.signal
                 });
+                
+                clearTimeout(timeoutId);
                 
                 if (!response.ok) continue;
                 
