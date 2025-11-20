@@ -1,9 +1,10 @@
-# EuroDreams Lottery Predictor PWA
+# EuroDreams Lottery Predictor - Desktop App
 
-A Progressive Web App that fetches historical EuroDreams lottery draw data and uses multiple prediction algorithms to suggest potential numbers for the next draw.
+A Desktop Application that fetches historical EuroDreams lottery draw data and uses multiple prediction algorithms to suggest potential numbers for the next draw.
 
 ## Features
 
+- 🖥️ **Desktop Application**: Native desktop app built with Electron
 - 📊 **Live Data**: Fetches historical draw data from CSV sources
 - 🤖 **5 Prediction Methods**:
   1. **Frequency Analysis**: Most commonly drawn numbers
@@ -11,19 +12,53 @@ A Progressive Web App that fetches historical EuroDreams lottery draw data and u
   3. **Gap Analysis**: Numbers that haven't appeared recently (overdue)
   4. **Pattern Balance**: Balanced mix of low and high numbers
   5. **Smart Random**: Random selection that hasn't been drawn before
-- 📱 **PWA Support**: Install as an app on mobile devices
 - 📈 **Statistics**: View historical draw statistics
 - ✅ **Validation**: Ensures predictions haven't been drawn before
 
-## Data Sources
+## Desktop Application (Recommended)
 
-The app uses a dynamic data discovery approach with fallback mechanisms:
-- **Primary**: Dynamically discovered CSV link from the [LotoIdeas EuroDreams Historical Results](https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/) page
-  - The app automatically scrapes the page to find the "Valores separados por comas (.csv)" link
-  - This ensures the latest Google Sheets URL is always used
-- **Fallback 1**: Hardcoded Google Sheets CSV URL (used if dynamic discovery fails)
-- **Fallback 2**: Embedded historical data in app.js (used for offline access)
-- **Data Discovery Tools**: Use the included Python scrapers to discover and download data files from the official source (see [Scraper Guide](SCRAPER_GUIDE.md))
+The desktop application provides the full functionality in a native desktop window.
+
+### Prerequisites
+
+- Windows, macOS, or Linux
+- Node.js 18 or higher (for development only)
+
+### Download and Install
+
+1. **Download the installer** from the [Releases](https://github.com/jrcramos/eurodreams/releases) page
+2. **Run the installer** and follow the installation wizard
+3. **Launch the application** from your applications menu
+
+### Building from Source
+
+1. **Clone the Repository**:
+    ```bash
+    git clone https://github.com/jrcramos/eurodreams.git
+    cd eurodreams
+    ```
+
+2. **Install Dependencies**:
+    ```bash
+    npm install
+    ```
+
+3. **Build the Application**:
+    ```bash
+    npm run electron:build
+    ```
+    
+    The installer will be created in the `release` directory.
+
+### Running in Development Mode
+
+To test the application during development:
+
+```bash
+npm run electron:dev
+```
+
+This starts both the Vite dev server and Electron in development mode with hot reload.
 
 ## How It Works
 
@@ -37,43 +72,23 @@ The app analyzes historical EuroDreams draws (6 main numbers from 1-40 + 1 dream
 4. **Pattern Balance**: Creates a balanced mix of low (1-20) and high (21-40) numbers
 5. **Smart Random**: Generates random combinations that have never been drawn before
 
-## Usage
+## Data Sources
 
-### Online Version
-
-Simply open `index.html` in a modern web browser. The app will:
-1. Fetch historical data from the configured CSV source
-2. Parse and analyze the draw history
-3. Generate 5 predictions using different algorithms
-4. Display statistics about the historical draws
-
-### Test Version
-
-For testing without internet or to see it work with mock data, open `test.html` which includes sample draw data.
-
-### Installing as PWA
-
-1. Open the app in Chrome/Edge on mobile or desktop
-2. Click the "Install" button when prompted
-3. The app will be added to your home screen/apps
-
-## Data Format
-
-The CSV data follows this structure:
-```
-FECHA,COMB. GANADORA,,,,,,SUEÑO
-17/11/2025,04,08,13,18,28,38,4
-```
-
-- Column 0: Date (FECHA)
-- Columns 1-6: Six main numbers (COMB. GANADORA)
-- Column 7: Dream number (SUEÑO)
+The app uses a dynamic data discovery approach with fallback mechanisms:
+- **Primary**: Dynamically discovered CSV link from the [LotoIdeas EuroDreams Historical Results](https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/) page
+  - The app automatically scrapes the page to find the "Valores separados por comas (.csv)" link
+  - This ensures the latest Google Sheets URL is always used
+- **Fallback 1**: Hardcoded Google Sheets CSV URL (used if dynamic discovery fails)
+- **Fallback 2**: Embedded historical data in app.js (used for offline access)
+- **Data Discovery Tools**: Use the included Python scrapers to discover and download data files from the official source (see [Scraper Guide](SCRAPER_GUIDE.md))
 
 ## Technical Details
 
-- **Pure JavaScript**: No frameworks or build tools required
-- **Service Worker**: Enables offline functionality
-- **Responsive Design**: Works on desktop and mobile devices
+- **Electron**: Cross-platform desktop app framework
+- **Vite**: Fast build tool for modern web development
+- **TypeScript**: For type-safe Electron main process code
+- **Pure JavaScript**: Frontend uses vanilla JavaScript with no frameworks
+- **Responsive Design**: Works on desktop displays of all sizes
 - **Modern CSS**: Uses CSS Grid and Flexbox for layout
 
 ## Files
@@ -81,11 +96,12 @@ FECHA,COMB. GANADORA,,,,,,SUEÑO
 - `index.html`: Main application page
 - `app.js`: Application logic with prediction algorithms
 - `styles.css`: Responsive styling
-- `manifest.json`: PWA manifest
-- `service-worker.js`: Service worker for offline support
-- `test.html`: Test page with mock data
-- `app-test.js`: Test version of app logic
-- `icon-192.png`, `icon-512.png`: PWA icons
+- `electron/main.ts`: Electron main process (system integration)
+- `electron/preload.ts`: Electron preload script (IPC bridge)
+- `package.json`: Dependencies and scripts
+- `tsconfig.json`: TypeScript config for frontend
+- `tsconfig.electron.json`: TypeScript config for Electron
+- `vite.config.ts`: Vite build configuration
 - `scrape_downloads.py`: Simple Python script to list download links
 - `download_data.py`: Advanced Python script to scrape and download data files
 - `test_scraper.py`: Test script for the web scraper
@@ -99,13 +115,30 @@ This app does not guarantee winning numbers. Lottery draws are random events, an
 
 ## Development
 
-To run locally:
+### Local Development (Web Version)
+
+To run the web version locally for development:
 
 ```bash
-# Start a local web server
-python3 -m http.server 8080
+# Start Vite dev server
+npm run dev
 
-# Open browser to http://localhost:8080
+# Open browser to http://localhost:5173
+```
+
+### Electron Development
+
+To run the Electron app in development mode:
+
+```bash
+npm run electron:dev
+```
+
+### Building for Production
+
+```bash
+# Build the Electron app for your platform
+npm run electron:build
 ```
 
 ### Web Scraper for Download Links
@@ -149,11 +182,10 @@ The scrapers automatically discover and list/download available files for:
 
 This allows you to find and download historical EuroDreams data files directly from the official source.
 
-## Browser Support
+## Platform Support
 
-- Chrome 80+
-- Edge 80+
-- Firefox 75+
-- Safari 13+
+The desktop application is built with Electron and supports:
 
-PWA features require a secure context (HTTPS) in production.
+- **Windows**: Windows 10 and later
+- **macOS**: macOS 10.13 (High Sierra) and later
+- **Linux**: Most modern distributions (AppImage format)
