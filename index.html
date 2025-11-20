@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EuroDreams Lottery Number Predictor using AI algorithms">
+    <meta name="theme-color" content="#1a73e8">
+    <title>EuroDreams Predictor</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" type="image/png" href="icon-192.png">
+    <link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎰 EuroDreams Predictor</h1>
+            <p class="subtitle">AI-Powered Lottery Number Predictions</p>
+        </header>
+
+        <main>
+            <section class="status-section">
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading historical data...</p>
+                </div>
+                <div id="error" class="error" style="display: none;"></div>
+                <div id="data-info" class="data-info" style="display: none;">
+                    <p>📊 Analyzed <span id="draw-count">0</span> historical draws</p>
+                </div>
+            </section>
+
+            <section class="predictions-section" id="predictions-section" style="display: none;">
+                <h2>🔮 Predictions for Next Draw</h2>
+                <p class="info-text">5 unique predictions using different algorithms</p>
+                
+                <div id="predictions-container" class="predictions-container"></div>
+
+                <button id="refresh-btn" class="refresh-btn">
+                    🔄 Generate New Predictions
+                </button>
+            </section>
+
+            <section class="stats-section" id="stats-section" style="display: none;">
+                <h3>📈 Statistics</h3>
+                <div id="stats-container" class="stats-container"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>⚠️ For entertainment purposes only. Play responsibly.</p>
+        </footer>
+    </div>
+
+    <div id="install-banner" class="install-banner" style="display: none;">
+        <p>📱 Install this app for quick access</p>
+        <button id="install-btn">Install</button>
+        <button id="dismiss-btn">✕</button>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
