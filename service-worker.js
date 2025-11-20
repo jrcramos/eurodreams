@@ -42,8 +42,14 @@ self.addEventListener('fetch', event => {
             caches.open(CACHE_NAME)
               .then(cache => {
                 // Don't cache the CSV data - always fetch fresh
-                if (!event.request.url.includes('docs.google.com')) {
-                  cache.put(event.request, responseToCache);
+                try {
+                  const url = new URL(event.request.url);
+                  if (url.hostname !== 'docs.google.com') {
+                    cache.put(event.request, responseToCache);
+                  }
+                } catch (e) {
+                  // If URL parsing fails, don't cache
+                  console.warn('Failed to parse URL for caching:', e);
                 }
               });
 
