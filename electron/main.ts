@@ -43,9 +43,26 @@ log(`Log file location: ${logFile}`);
 function createWindow() {
   log('Creating main window');
   
+  // Determine icon path based on platform
+  let iconPath: string | undefined;
+  if (process.platform === 'win32') {
+    iconPath = path.join(__dirname, '../build/icon.ico');
+  } else if (process.platform === 'darwin') {
+    iconPath = path.join(__dirname, '../build/icon.icns');
+  } else {
+    // Linux and other platforms
+    iconPath = path.join(__dirname, '../build/icon.png');
+  }
+  
+  // In development, icon paths are relative to project root
+  if (process.env.NODE_ENV === 'development') {
+    iconPath = path.join(__dirname, '../build/icon.png');
+  }
+  
   mainWindow = new BrowserWindow({
     width: 1200,
     height: 900,
+    icon: iconPath,
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

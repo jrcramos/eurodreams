@@ -146,7 +146,14 @@ If icons are missing in the built app:
 1. Ensure icon files exist in the `build` directory
 2. For Windows: `build/icon.ico`
 3. For macOS: `build/icon.icns`
-4. For Linux: Icons are generated from PNG files
+4. For Linux: `build/icon.png`
+
+To regenerate icons from the source PNG file:
+```bash
+npm run generate-icons
+```
+
+This will create platform-specific icon files from `icon-512.png`.
 
 ## Python Scripts (Optional)
 
