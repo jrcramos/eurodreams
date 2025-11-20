@@ -316,12 +316,22 @@ async function discoverCSVUrl() {
                     if ((text.includes('valores separados por comas') || 
                          text.includes('.csv') ||
                          text.includes('csv')) && 
-                        href && 
-                        href.includes('docs.google.com') && 
-                        href.includes('output=csv')) {
+                        href) {
                         
-                        console.log('✅ Discovered CSV URL from LotoIdeas:', href);
-                        return href;
+                        // Validate that the URL is from Google Sheets (security check)
+                        try {
+                            const url = new URL(href);
+                            if (url.hostname === 'docs.google.com' && 
+                                url.pathname.includes('/spreadsheets/') && 
+                                url.searchParams.get('output') === 'csv') {
+                                
+                                console.log('✅ Discovered CSV URL from LotoIdeas:', href);
+                                return href;
+                            }
+                        } catch (urlError) {
+                            // Invalid URL, skip it
+                            continue;
+                        }
                     }
                 }
             } catch (proxyError) {
