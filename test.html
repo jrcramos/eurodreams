@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EuroDreams Predictor - Test with Mock Data</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎰 EuroDreams Predictor</h1>
+            <p class="subtitle">AI-Powered Lottery Number Predictions (Test Mode)</p>
+        </header>
+
+        <main>
+            <section class="status-section">
+                <div id="loading" class="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Loading historical data...</p>
+                </div>
+                <div id="error" class="error" style="display: none;"></div>
+                <div id="data-info" class="data-info">
+                    <p>📊 Analyzed <span id="draw-count">0</span> historical draws (Mock Data)</p>
+                </div>
+            </section>
+
+            <section class="predictions-section" id="predictions-section">
+                <h2>🔮 Predictions for Next Draw</h2>
+                <p class="info-text">5 unique predictions using different algorithms</p>
+                
+                <div id="predictions-container" class="predictions-container"></div>
+
+                <button id="refresh-btn" class="refresh-btn">
+                    🔄 Generate New Predictions
+                </button>
+            </section>
+
+            <section class="stats-section" id="stats-section">
+                <h3>📈 Statistics</h3>
+                <div id="stats-container" class="stats-container"></div>
+            </section>
+        </main>
+
+        <footer>
+            <p>⚠️ For entertainment purposes only. Play responsibly.</p>
+        </footer>
+    </div>
+
+    <script src="app-test.js"></script>
+</body>
+</html>
