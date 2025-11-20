@@ -2,6 +2,12 @@
 
 A Desktop Application that fetches historical EuroDreams lottery draw data and uses multiple prediction algorithms to suggest potential numbers for the next draw.
 
+## 📸 Screenshots
+
+![EuroDreams Predictor App](screenshots/app-screenshot.png)
+
+*The app shows 5 different prediction methods with visual number displays and statistics*
+
 ## Features
 
 - 🖥️ **Desktop Application**: Native desktop app built with Electron
