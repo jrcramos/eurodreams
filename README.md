@@ -82,6 +82,9 @@ FECHA,COMB. GANADORA,,,,,,SUEÑO
 - `test.html`: Test page with mock data
 - `app-test.js`: Test version of app logic
 - `icon-192.png`, `icon-512.png`: PWA icons
+- `scrape_downloads.py`: Python script to scrape download links from LotoIdeas
+- `test_scraper.py`: Test script for the web scraper
+- `requirements.txt`: Python dependencies
 
 ## Disclaimer
 
@@ -99,6 +102,30 @@ python3 -m http.server 8080
 
 # Open browser to http://localhost:8080
 ```
+
+### Web Scraper for Download Links
+
+The repository includes a Python script to scrape download links from the LotoIdeas website:
+
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Run the scraper to find downloadable files
+python3 scrape_downloads.py
+
+# Run tests to verify scraper functionality
+python3 test_scraper.py
+```
+
+The scraper (`scrape_downloads.py`) automatically discovers and lists available download links for:
+- CSV files (`.csv`)
+- Excel files (`.xlsx`)
+- OpenDocument spreadsheets (`.ods`)
+- PDF files (`.pdf`)
+- Tab-separated values (`.tsv`)
+
+This allows you to find and download historical EuroDreams data files directly from the official source.
 
 ## Browser Support
 
