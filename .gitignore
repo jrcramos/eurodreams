@@ -18,6 +18,14 @@ __pycache__/
 *.so
 .Python
 
+# Downloaded data files
+downloads/
+*.csv
+*.xlsx
+*.ods
+*.pdf
+*.tsv
+
 # Test and temporary files (keep in repo as they're useful)
 # test.html
 # app-test.js

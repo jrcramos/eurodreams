@@ -82,7 +82,8 @@ FECHA,COMB. GANADORA,,,,,,SUEÑO
 - `test.html`: Test page with mock data
 - `app-test.js`: Test version of app logic
 - `icon-192.png`, `icon-512.png`: PWA icons
-- `scrape_downloads.py`: Python script to scrape download links from LotoIdeas
+- `scrape_downloads.py`: Simple Python script to list download links
+- `download_data.py`: Advanced Python script to scrape and download data files
 - `test_scraper.py`: Test script for the web scraper
 - `requirements.txt`: Python dependencies
 
@@ -105,25 +106,42 @@ python3 -m http.server 8080
 
 ### Web Scraper for Download Links
 
-The repository includes a Python script to scrape download links from the LotoIdeas website:
+The repository includes Python scripts to scrape and download data from the LotoIdeas website:
 
 ```bash
 # Install Python dependencies
 pip install -r requirements.txt
 
-# Run the scraper to find downloadable files
+# List available download links
 python3 scrape_downloads.py
+
+# List all available data files with filtering options
+python3 download_data.py
+
+# Download all available data files
+python3 download_data.py --download
+
+# Download only CSV files
+python3 download_data.py --download --file-type csv
+
+# Download to a specific directory
+python3 download_data.py --download --output-dir ./my_data
 
 # Run tests to verify scraper functionality
 python3 test_scraper.py
 ```
 
-The scraper (`scrape_downloads.py`) automatically discovers and lists available download links for:
-- CSV files (`.csv`)
-- Excel files (`.xlsx`)
-- OpenDocument spreadsheets (`.ods`)
-- PDF files (`.pdf`)
-- Tab-separated values (`.tsv`)
+The scrapers automatically discover and list/download available files for:
+- CSV files (`.csv`) - Comma-separated values
+- Excel files (`.xlsx`) - Microsoft Excel format
+- OpenDocument spreadsheets (`.ods`) - Open standard format
+- PDF files (`.pdf`) - Portable Document Format
+- Tab-separated values (`.tsv`) - Tab-delimited data
+
+**Available Scripts:**
+- `scrape_downloads.py` - Simple scraper that lists download links
+- `download_data.py` - Advanced scraper with download capabilities and filtering
+- `test_scraper.py` - Test suite for the scraper functionality
 
 This allows you to find and download historical EuroDreams data files directly from the official source.
 
