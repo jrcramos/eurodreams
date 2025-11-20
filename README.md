@@ -17,10 +17,13 @@ A Progressive Web App that fetches historical EuroDreams lottery draw data and u
 
 ## Data Sources
 
-The app currently uses the Google Sheets CSV export as the data source:
-- **Primary**: Google Sheets CSV (configured in app.js)
-- **Official Source**: [LotoIdeas EuroDreams Historical Results](https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/)
-- **Data Discovery**: Use the included Python scrapers to discover and download data files from the official source (see [Scraper Guide](SCRAPER_GUIDE.md))
+The app uses a dynamic data discovery approach with fallback mechanisms:
+- **Primary**: Dynamically discovered CSV link from the [LotoIdeas EuroDreams Historical Results](https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/) page
+  - The app automatically scrapes the page to find the "Valores separados por comas (.csv)" link
+  - This ensures the latest Google Sheets URL is always used
+- **Fallback 1**: Hardcoded Google Sheets CSV URL (used if dynamic discovery fails)
+- **Fallback 2**: Embedded historical data in app.js (used for offline access)
+- **Data Discovery Tools**: Use the included Python scrapers to discover and download data files from the official source (see [Scraper Guide](SCRAPER_GUIDE.md))
 
 ## How It Works
 

@@ -1,5 +1,15 @@
 // EuroDreams Lottery Predictor PWA
-const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZzm-CTUj3li4EdfW1ImthPdc0AGIymq8tbuwPiqjW0OL4F1MWO5G6PfPEtNvLJcY8MpJo4apayTip/pub?output=csv';
+
+// The CSV link is embedded in the LotoIdeas website page
+// Source page: https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/
+// Look for link text: "Valores separados por comas (.csv)"
+const LOTOIDEAS_URL = 'https://www.lotoideas.com/eurodreams-resultados-historicos-de-todos-los-sorteos/';
+
+// Fallback CSV URL (in case dynamic discovery fails)
+// This URL is extracted from the LotoIdeas website
+const FALLBACK_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZzm-CTUj3li4EdfW1ImthPdc0AGIymq8tbuwPiqjW0OL4F1MWO5G6PfPEtNvLJcY8MpJo4apayTip/pub?output=csv';
+
+let CSV_URL = FALLBACK_CSV_URL; // Will be updated if dynamic discovery succeeds
 
 // Fallback data when external fetch fails (e.g., CORS issues with file:// protocol)
 const FALLBACK_CSV = `FECHA,COMB. GANADORA,,,,,,SUEÑO
@@ -258,11 +268,99 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
+/**
+ * Attempts to discover the CSV URL dynamically from the LotoIdeas website.
+ * This function tries to scrape the page to find the link with text 
+ * "Valores separados por comas (.csv)" which contains the Google Sheets URL.
+ * 
+ * @returns {Promise<string|null>} The discovered CSV URL or null if not found
+ */
+async function discoverCSVUrl() {
+    try {
+        // Try multiple CORS proxy services as fallbacks
+        const corsProxies = [
+            'https://api.allorigins.win/raw?url=',
+            'https://corsproxy.io/?',
+            '' // Direct access (will fail due to CORS but worth trying)
+        ];
+        
+        for (const proxy of corsProxies) {
+            try {
+                const url = proxy + encodeURIComponent(LOTOIDEAS_URL);
+                
+                // Create abort controller for timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                
+                const response = await fetch(proxy ? url : LOTOIDEAS_URL, { 
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) continue;
+                
+                const html = await response.text();
+                
+                // Parse HTML to find CSV link
+                // Look for link containing "Valores separados por comas" or ".csv"
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(html, 'text/html');
+                const links = doc.querySelectorAll('a');
+                
+                for (const link of links) {
+                    const text = link.textContent.toLowerCase();
+                    const href = link.href;
+                    
+                    // Look for CSV link indicators
+                    if ((text.includes('valores separados por comas') || 
+                         text.includes('.csv') ||
+                         text.includes('csv')) && 
+                        href) {
+                        
+                        // Validate that the URL is from Google Sheets (security check)
+                        try {
+                            const url = new URL(href);
+                            if (url.hostname === 'docs.google.com' && 
+                                url.pathname.includes('/spreadsheets/') && 
+                                url.searchParams.get('output') === 'csv') {
+                                
+                                console.log('✅ Discovered CSV URL from LotoIdeas:', href);
+                                return href;
+                            }
+                        } catch (urlError) {
+                            // Invalid URL, skip it
+                            continue;
+                        }
+                    }
+                }
+            } catch (proxyError) {
+                // Try next proxy
+                continue;
+            }
+        }
+        
+        return null;
+    } catch (error) {
+        console.warn('Failed to discover CSV URL dynamically:', error.message);
+        return null;
+    }
+}
+
 async function loadData() {
     try {
         showLoading();
         let csvText;
         let usedFallback = false;
+        
+        // Try to discover the CSV URL dynamically
+        const discoveredUrl = await discoverCSVUrl();
+        if (discoveredUrl) {
+            CSV_URL = discoveredUrl;
+            console.log('Using dynamically discovered CSV URL');
+        } else {
+            console.log('Using fallback CSV URL');
+        }
         
         try {
             const response = await fetch(CSV_URL);
