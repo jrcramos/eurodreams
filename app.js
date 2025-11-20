@@ -1,6 +1,29 @@
 // EuroDreams Lottery Predictor PWA
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTZzm-CTUj3li4EdfW1ImthPdc0AGIymq8tbuwPiqjW0OL4F1MWO5G6PfPEtNvLJcY8MpJo4apayTip/pub?output=csv';
 
+// Fallback data when external fetch fails (e.g., CORS issues with file:// protocol)
+const FALLBACK_CSV = `FECHA,COMB. GANADORA,,,,,,SUEÑO
+17/11/2025,04,08,13,18,28,38,4
+13/11/2025,07,15,18,19,24,32,2
+10/11/2025,01,08,10,19,21,37,2
+6/11/2025,11,13,15,31,33,34,3
+3/11/2025,02,10,12,20,21,26,2
+30/10/2025,09,14,18,22,33,39,2
+27/10/2025,18,19,21,23,30,35,1
+23/10/2025,08,17,20,21,24,31,5
+20/10/2025,05,11,15,23,29,36,3
+16/10/2025,03,09,16,25,27,40,1
+13/10/2025,06,12,14,17,22,38,4
+9/10/2025,01,04,19,26,32,39,5
+6/10/2025,02,07,13,21,28,33,2
+2/10/2025,10,15,18,24,30,37,3
+29/09/2025,05,08,11,19,25,35,1
+25/09/2025,03,14,20,23,31,40,4
+22/09/2025,06,09,16,22,27,34,2
+18/09/2025,01,12,17,26,29,38,5
+15/09/2025,04,13,21,24,32,36,3
+11/09/2025,07,10,15,19,28,39,1`;
+
 let historicalDraws = [];
 let deferredPrompt;
 
@@ -45,10 +68,20 @@ document.addEventListener('DOMContentLoaded', () => {
 async function loadData() {
     try {
         showLoading();
-        const response = await fetch(CSV_URL);
-        if (!response.ok) throw new Error('Failed to fetch data');
+        let csvText;
+        let usedFallback = false;
         
-        const csvText = await response.text();
+        try {
+            const response = await fetch(CSV_URL);
+            if (!response.ok) throw new Error('Failed to fetch data');
+            csvText = await response.text();
+        } catch (fetchError) {
+            // Fetch failed (CORS, network issue, etc.) - use fallback data
+            console.warn('Failed to fetch from external source, using fallback data:', fetchError.message);
+            csvText = FALLBACK_CSV;
+            usedFallback = true;
+        }
+        
         historicalDraws = parseCSV(csvText);
         
         if (historicalDraws.length === 0) {
@@ -56,7 +89,7 @@ async function loadData() {
         }
         
         hideLoading();
-        showDataInfo(historicalDraws.length);
+        showDataInfo(historicalDraws.length, usedFallback);
         generatePredictions();
         displayStats();
     } catch (error) {
@@ -345,9 +378,18 @@ function showError(message) {
     errorEl.style.display = 'block';
 }
 
-function showDataInfo(count) {
+function showDataInfo(count, usedFallback = false) {
     document.getElementById('draw-count').textContent = count;
-    document.getElementById('data-info').style.display = 'block';
+    const dataInfoEl = document.getElementById('data-info');
+    const infoText = dataInfoEl.querySelector('p');
+    
+    if (usedFallback) {
+        infoText.innerHTML = `📊 Analyzed <span id="draw-count">${count}</span> historical draws <span style="color: #ff9800;">(Using cached data)</span>`;
+    } else {
+        infoText.innerHTML = `📊 Analyzed <span id="draw-count">${count}</span> historical draws`;
+    }
+    
+    dataInfoEl.style.display = 'block';
 }
 
 function displayPredictions(predictions) {
